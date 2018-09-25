@@ -1,0 +1,32 @@
+# -*- coding: utf-8 -*-
+# vim: ft=jinja
+
+{%- set os         = salt['grains.get']('os') %}
+{%- set osrelease  = salt['grains.get']('osrelease') %}
+{%- set oscodename = salt['grains.get']('oscodename') %}
+
+{## Start with defaults from defaults.yaml ##}
+{% import_yaml 'backup/defaults.yaml' as default_settings %}
+
+{##
+Setup variables using grains['os_family'] based logic, only add key:values
+that differ from what is in defaults.yaml
+##}
+{% set os_family_map = salt['grains.filter_by']({
+    'Debian': {
+        'pkgs': ['rsync', 'tar', 'bzip2', 'gzip', 'zip', 'unzip'],
+    },
+}
+, grain="os_family"
+, merge=salt['pillar.get']('backup:lookup'), default='Debian') %}
+
+{## Merge the flavor_map to the default settings ##}
+{% do default_settings.backup.update(os_family_map) %}
+
+{## Merge in backup:lookup pillar ##}
+{% set backup = salt['pillar.get'](
+        'backup',
+        default=default_settings.backup,
+        merge=True
+    )
+%}
