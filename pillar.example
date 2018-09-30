@@ -1,0 +1,36 @@
+backup:
+
+{%- set date = salt['cmd.shell']('date +"%Y%m%d%H%M%S"') %}
+
+  dropbox:
+    token: stupidtoken
+
+  rsync:
+    /home/user1:
+      target: /backup/user1
+      excludefrom:
+        path: /home/user1/.backup_rsync_exclude
+        user: user1
+        group: user1
+        mode: 640
+        contents:
+         - '**/.*'
+      additionnal_opts:
+        - '-H'
+
+  archive:
+    /backup/system/system_{{date}}.tgz:
+      format: tgz
+      options: "--exclude-from=/srv/.backup.exclude -czf"
+      encrypt:
+        gpg:
+          passphrase: stupidpassphrase
+          recipient: foo@bar.com
+          suffix: .sig
+      retention: 8
+      sources:
+        - /etc
+        - /srv
+      dropbox:
+        path: /backup/system/system_{{date}}.tgz.sig
+        token: stupidtoken
