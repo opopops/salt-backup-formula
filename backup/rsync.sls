@@ -3,10 +3,10 @@
 include:
   - backup.install
 
-{%- for name, params in backup.get('rsync', {}).items() %}
+{%- for source, params in backup.get('rsync', {}).items() %}
 
   {%- if params.excludefrom is mapping and params.excludefrom.get('path', False) %}
-backup_rsync_{{name}}_excludefrom:
+backup_rsync_{{source}}_excludefrom:
   file.managed:
     - name: {{params.excludefrom.path}}
     {%- for k, v in params.items() %}
@@ -15,12 +15,12 @@ backup_rsync_{{name}}_excludefrom:
       {%- endif %}
     {%- endfor %}
     - require_in:
-      - rsync: backup_rsync_{{name}}
+      - rsync: backup_rsync_{{source}}
   {%- endif %}
 
-backup_rsync_{{name}}:
+backup_rsync_{{source}}:
   rsync.synchronized:
-    - name: {{name}}
+    - name: {{params.target}}
     {%- if params.get('excludefrom', False) %}
       {%- if params.excludefrom is mapping and params.excludefrom.get('path', False) %}
     - excludefrom: {{params.excludefrom.path}}
@@ -29,7 +29,7 @@ backup_rsync_{{name}}:
       {%- endif %}
     {%- endif %}
     {%- for k, v in params.items() %}
-      {%- if k not in ['name', 'excludefrom'] %}
+      {%- if k not in ['name', 'target', 'excludefrom'] %}
     - {{k}}: {{v}}
       {%- endif %}
     {%- endfor %}
