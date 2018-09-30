@@ -7,5 +7,7 @@ backup:
   tbz2_options: cjvf
   gzip_options: '-v9'
 
+  encrypt_suffix: .sig
+
   dropbox:
     upload_url: https://content.dropboxapi.com/2/files/upload

@@ -81,7 +81,7 @@ backup_archive_{{file}}:
 
   {%- if params.encrypt is defined %}
     {%- if params.encrypt.gpg is defined %}
-      {%- set encrypt_file = file ~ params.encrypt.gpg.suffix|default('.sig') %}
+      {%- set encrypt_file = file ~ params.encrypt.gpg.suffix|default(backup.encrypt_suffx) %}
       {%- set gpg_opts = [] %}
       {%- do gpg_opts.append('--passphrase=' ~ params.encrypt.gpg.passphrase) %}
 
