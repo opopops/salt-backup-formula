@@ -121,7 +121,7 @@ backup_archive_{{file}}_file:
   {%- if params.retention is defined %}
 backup_archive_{{file}}_retention:
   cmd.run:
-    - cwd: {{params.target}}
+    - cwd: {{salt['file.dirname'](file)}}
     - name: ls -tr | head -n -{{ params.retention|int - 1 }} | xargs rm -rf
   {%- endif %}
 
