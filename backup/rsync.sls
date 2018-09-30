@@ -21,7 +21,7 @@ backup_rsync_{{source}}_excludefrom:
 backup_rsync_{{source}}:
   rsync.synchronized:
     - name: {{params.target}}
-    - source: {{params.source}}
+    - source: {{source}}
     {%- if params.get('excludefrom', False) %}
       {%- if params.excludefrom is mapping and params.excludefrom.get('path', False) %}
     - excludefrom: {{params.excludefrom.path}}
