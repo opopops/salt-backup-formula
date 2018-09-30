@@ -4,6 +4,6 @@
   {%- if not params.persist|default(False) %}
 backup_unmount_{{name}}:
   mount.unmounted:
-    - name: {{params.name}}
+    - name: {{name}}
   {%- endif %}
 {%- endfor %}

@@ -2,6 +2,7 @@
 
 include:
   - backup.install
+  - backup.mount
 
 {%- for source, params in backup.get('rsync', {}).items() %}
 

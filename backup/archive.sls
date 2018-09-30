@@ -2,6 +2,7 @@
 
 include:
   - backup.install
+  - backup.mount
 
 {%- for file, params in backup.get('archive', {}).items() %}
   {%- set format = params.get('format', backup.archive_format) %}
