@@ -11,6 +11,19 @@ backup_archive_{{name}}_directory:
     - user: {{params.user|default('root')}}
     - group: {{params.group|default('root')}}
 
+  {%- if params.excludefrom is mapping and params.excludefrom.get('path', False) %}
+backup_archive_{{name}}_excludefrom:
+  file.managed:
+    - name: {{params.excludefrom.path}}
+    {%- for k, v in params.items() %}
+      {%- if k in ['user', 'group', 'mode', 'contents'] %}
+    - {{k}}: {{v}}
+      {%- endif %}
+    {%- endfor %}
+    - require_in:
+      - module: backup_archive_{{name}}
+  {%- endif %}
+
   {%- if format in ['tgz', 'tar.gz'] %}
     {%- set options = params.options|default(backup.archive.tgz_options) %}
 backup_archive_{{name}}:
