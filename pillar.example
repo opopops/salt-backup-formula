@@ -21,14 +21,13 @@ backup:
   archive:
     /backup/system/system_{{date}}.tgz:
       format: tgz
-      options: "--exclude-from=/srv/.backup.exclude -czf"
       excludefrom:
         path: /home/user1/.backup_system.exclude
         user: user1
         group: user1
         mode: 640
         contents:
-         - '**/.*'
+          - '**/.*'
       encrypt:
         gpg:
           passphrase: stupidpassphrase
