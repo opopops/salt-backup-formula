@@ -7,7 +7,7 @@ include:
 
 backup_archive_{{name}}_directory:
   file.directory:
-    - name: {{salt['file.dirname'](params.file)}}
+    - name: {{salt['file.dirname'](file)}}
     - user: {{params.user|default('root')}}
     - group: {{params.group|default('root')}}
 

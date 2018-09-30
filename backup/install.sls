@@ -5,4 +5,4 @@
 
 backup_packages:
   pkg.installed:
-    - pkgs: {{backup.packages}}
+    - pkgs: {{backup.pkgs}}
