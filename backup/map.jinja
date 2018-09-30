@@ -14,7 +14,7 @@ that differ from what is in defaults.yaml
 ##}
 {% set os_family_map = salt['grains.filter_by']({
     'Debian': {
-        'pkgs': ['rsync', 'tar', 'bzip2', 'gzip', 'zip', 'unzip'],
+        'pkgs': ['rsync', 'tar', 'bzip2', 'gzip', 'zip', 'unzip', 'curl'],
     },
 }
 , grain="os_family"
