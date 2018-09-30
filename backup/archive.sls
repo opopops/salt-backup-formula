@@ -129,7 +129,7 @@ backup_archive_{{file}}_retention:
 backup_archive_{{file}}_dropbox:
   cmd.run:
     - name: 'curl -X POST {{backup.dropbox.upload_url}}
-                 --header "Authorization: Bearer {{params.dropbox.token|default(dropbox.token)}}"
+                 --header "Authorization: Bearer {{params.dropbox.token|default(backup.dropbox.token)}}"
                  --header "Dropbox-API-Arg: {\"path\": \"{{params.dropbox.path}}\",\"mode\": \"add\",\"autorename\": true,\"mute\": false}"
                  --header "Content-Type: application/octet-stream"
                  --data-binary @{{file}}'
