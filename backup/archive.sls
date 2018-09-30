@@ -98,9 +98,9 @@ backup_archive_{{file}}_clean:
   file.absent:
     - name: {{file}}
     - retry:
-      attempts: 3
-      until: True
-      interval: 5
+        attempts: 3
+        until: True
+        interval: 5
     - require:
       - cmd: backup_archive_{{file}}_encrypt
 
