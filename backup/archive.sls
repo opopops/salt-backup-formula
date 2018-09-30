@@ -4,6 +4,7 @@ include:
   - backup.install
 
 {%- for file, params in backup.get('archive', {}).items() %}
+  {%- set format = params.get('format', backup.archive.format) %}
 
 backup_archive_{{file}}_directory:
   file.directory:
