@@ -15,7 +15,7 @@ backup:
         mode: 640
         contents:
          - '**/.*'
-      additionnal_opts:
+      additional_opts:
         - '-H'
 
   archive:
