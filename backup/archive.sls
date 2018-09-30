@@ -4,7 +4,7 @@ include:
   - backup.install
 
 {%- for file, params in backup.get('archive', {}).items() %}
-  {%- set format = params.get('format', backup.archive.format) %}
+  {%- set format = params.get('format', backup.archive_format) %}
 
 backup_archive_{{file}}_directory:
   file.directory:
@@ -26,7 +26,7 @@ backup_archive_{{file}}_excludefrom:
   {%- endif %}
 
   {%- if format in ['tgz', 'tar.gz'] %}
-    {%- set options = params.options|default(backup.archive.tgz_options) %}
+    {%- set options = params.options|default(backup.tgz_options) %}
 backup_archive_{{file}}:
   module.run:
     - archive.tar:
@@ -37,7 +37,7 @@ backup_archive_{{file}}:
       - file: backup_archive_{{file}}_directory
       - sls: backup.install
   {%- elif format in ['tbz', 'tbz2', 'tar.bz', 'tar.bz2'] %}
-    {%- set options = params.options|default(backup.archive.tbz2_options) %}
+    {%- set options = params.options|default(backup.tbz2_options) %}
 backup_archive_{{file}}:
   module.run:
     - archive.tar:
@@ -48,7 +48,7 @@ backup_archive_{{file}}:
       - file: backup_archive_{{file}}_directory
       - sls: backup.install
   {%- elif format == 'tar' %}
-    {%- set options = params.options|default(backup.archive.tar_options) %}
+    {%- set options = params.options|default(backup.tar_options) %}
 backup_archive_{{file}}:
   module.run:
     - archive.tar:
@@ -68,7 +68,7 @@ backup_archive_{{file}}:
       - file: backup_archive_{{file}}_directory
       - sls: backup.install
   {%- elif format == 'gzip' %}
-    {%- set options = params.options|default(backup.archive.gzip_options) %}
+    {%- set options = params.options|default(backup.gzip_options) %}
 backup_archive_{{file}}:
   module.run:
     - archive.gzip:

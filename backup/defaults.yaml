@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 backup:
-  archive:
-    format: tgz
-    tar_options: cvf
-    tgz_options: cvzf
-    tbz2_options: cjvf
-    gzip_options: '-v9'
+  archive_format: tgz
+  tar_options: cvf
+  tgz_options: cvzf
+  tbz2_options: cjvf
+  gzip_options: '-v9'
 
   dropbox:
     upload_url: https://content.dropboxapi.com/2/files/upload
