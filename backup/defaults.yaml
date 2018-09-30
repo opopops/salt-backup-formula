@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 backup:
-  archive_format: tgz
-  tar_options: cvf
-  tgz_options: cvzf
-  tbz2_options: cjvf
-  gzip_options: '-v9'
+  archive_format: tar
+  tar_options: -cvzf
+  gzip_options: -v9
 
   encrypt_suffix: .sig
 

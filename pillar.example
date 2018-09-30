@@ -20,7 +20,7 @@ backup:
 
   archive:
     /backup/system/system_{{date}}.tgz:
-      format: tgz
+      format: tar
       excludefrom:
         path: /home/user1/.backup_system.exclude
         user: user1
@@ -29,10 +29,8 @@ backup:
         contents:
           - '**/.*'
       encrypt:
-        gpg:
-          passphrase: stupidpassphrase
-          recipient: foo@bar.com
-          suffix: .sig
+        passphrase: stupidpassphrase
+        recipient: foo@bar.com
       retention: 8
       sources:
         - /etc

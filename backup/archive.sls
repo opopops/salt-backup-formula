@@ -13,7 +13,12 @@ backup_archive_{{file}}_directory:
     - user: {{params.user|default('root')}}
     - group: {{params.group|default('root')}}
 
-  {%- if params.excludefrom is mapping and params.excludefrom.get('path', False) %}
+  {%- if format == 'tar' %}
+
+    {%- set excludefrom_option = '' %}
+
+    {%- if params.excludefrom is mapping and params.excludefrom.get('path', False) %}
+      {%- set excludefrom_option = '--exclude-from=' ~ params.excludefrom.path %}
 backup_archive_{{file}}_excludefrom:
   file.managed:
     - name: {{params.excludefrom.path}}
@@ -24,38 +29,18 @@ backup_archive_{{file}}_excludefrom:
     {%- endfor %}
     - require_in:
       - module: backup_archive_{{file}}
-  {%- endif %}
+    {%- endif %}
 
-  {%- if format in ['tgz', 'tar.gz'] %}
-    {%- set options = params.options|default(backup.tgz_options) %}
-backup_archive_{{file}}:
-  module.run:
-    - archive.tar:
-      - options: {{options}}
-      - sources: {{params.sources}}
-      - tarfile: {{file}}
-    - require:
-      - file: backup_archive_{{file}}_directory
-      - sls: backup.install
-  {%- elif format in ['tbz', 'tbz2', 'tar.bz', 'tar.bz2'] %}
-    {%- set options = params.options|default(backup.tbz2_options) %}
-backup_archive_{{file}}:
-  module.run:
-    - archive.tar:
-      - options: {{options}}
-      - sources: {{params.sources}}
-      - tarfile: {{file}}
-    - require:
-      - file: backup_archive_{{file}}_directory
-      - sls: backup.install
-  {%- elif format == 'tar' %}
     {%- set options = params.options|default(backup.tar_options) %}
 backup_archive_{{file}}:
   module.run:
     - archive.tar:
-      - options: {{options}}
+      - options: {{[excludefrom_option, options]|join(' ')}}
       - sources: {{params.sources}}
       - tarfile: {{file}}
+      {%- if params.get('cwd', False) %}
+      - cwd: {{params.cwd}}
+      {%- endif %}
     - require:
       - file: backup_archive_{{file}}_directory
       - sls: backup.install
@@ -65,6 +50,9 @@ backup_archive_{{file}}:
     - archive.cmd_zip:
       - sources: {{params.sources}}
       - zip_file: {{file}}
+      {%- if params.get('cwd', False) %}
+      - cwd: {{params.cwd}}
+      {%- endif %}
     - require:
       - file: backup_archive_{{file}}_directory
       - sls: backup.install
@@ -75,16 +63,18 @@ backup_archive_{{file}}:
     - archive.gzip:
       - source: {{params.source}}
       - options: {{options}}
+      {%- if params.get('user', False) %}
+      - runas: {{params.user}}
+      {%- endif %}
     - require:
       - file: backup_archive_{{file}}_directory
       - sls: backup.install
   {%- endif %}
 
   {%- if params.encrypt is defined %}
-    {%- if params.encrypt.gpg is defined %}
-      {%- set encrypt_file = file ~ params.encrypt.gpg.suffix|default(backup.encrypt_suffx) %}
-      {%- set gpg_opts = [] %}
-      {%- do gpg_opts.append('--passphrase=' ~ params.encrypt.gpg.passphrase) %}
+    {%- set encrypt_file = file ~ params.encrypt.gpg.suffix|default(backup.encrypt_suffx) %}
+    {%- set gpg_opts = [] %}
+    {%- do gpg_opts.append('--passphrase=' ~ params.encrypt.gpg.passphrase) %}
 
 backup_archive_{{file}}_encrypt:
   cmd.run:
@@ -105,7 +95,6 @@ backup_archive_{{file}}_clean:
     - require:
       - cmd: backup_archive_{{file}}_encrypt
 
-    {%- endif %}
   {%- endif %}
 
 backup_archive_{{file}}_file:
