@@ -109,7 +109,7 @@ backup_archive_{{file}}_clean:
 
 backup_archive_{{file}}_file:
   file.managed:
-    - name: {{file}}
+    - name: {{encrypt_file|default(file)}}
     - user: {{params.user|default('root')}}
     - group: {{params.group|default('root')}}
     - mode: {{params.mode|default('640')}}
@@ -125,18 +125,13 @@ backup_archive_{{file}}_retention:
   {%- endif %}
 
   {%- if params.dropbox is defined %}
-    {%- if params.get('encrypt', False) %}
-      {%- set data_file = encrypt_file %}
-    {%- else %}
-      {%- set data_file = file %}
-    {%- endif %}
 backup_archive_{{file}}_dropbox:
   cmd.run:
     - name: 'curl -X POST {{backup.dropbox.upload_url}}
                  --header "Authorization: Bearer {{params.dropbox.token|default(backup.dropbox.token)}}"
                  --header "Dropbox-API-Arg: {\"path\": \"{{params.dropbox.path}}\",\"mode\": \"add\",\"autorename\": true,\"mute\": false}"
                  --header "Content-Type: application/octet-stream"
-                 --data-binary @{{data_file}}'
+                 --data-binary @{{encrypt_file|default(file)}}'
     - require:
       - module: backup_archive_{{file}}
   {%- endif %}
